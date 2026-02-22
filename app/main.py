@@ -56,6 +56,15 @@ async def startup_event():
 
 
 # Charger les routes avec gestion d'erreurs
+# Charger les routes publiques d'abord
+try:
+    from app.routes import public
+    app.include_router(public.router)
+    logger.info("Public routes loaded")
+except Exception as e:
+    logger.warning(f"Public routes failed to load: {e}")
+
+# Charger les autres routes
 try:
     from app.routes import agencies, listings, scraper, auth, user_features, maps
     from app.routes.discovery_scraping import router as discovery_router
