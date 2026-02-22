@@ -116,3 +116,24 @@ def get_api_info():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
+# Endpoint de monitoring
+@app.get("/api/monitoring/metrics", tags=["monitoring"])
+def get_metrics():
+    """Récupérer les métriques de l'API."""
+    try:
+        from monitoring import monitor
+        return monitor.get_metrics()
+    except Exception as e:
+        logger.error(f"Error getting metrics: {e}")
+        return {"error": "Unable to get metrics"}
+
+
+@app.get("/api/monitoring/status", tags=["monitoring"])
+def get_monitoring_status():
+    """Récupérer le statut du monitoring."""
+    return {
+        "status": "operational",
+        "timestamp": datetime.utcnow().isoformat(),
+    }
